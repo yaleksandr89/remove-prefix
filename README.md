@@ -4,9 +4,9 @@
 
 ## Выберите язык:
 
-| Русский  | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
-|----------|--------------------------------------|--------------------------------------|---------------------------------|---------------------------------------|--------------------------------------|
-| **Выбран*- | [English](./langs/README_en.md) | [Español](./langs/README_es.md) | [中文](./langs/README_zh.md) | [Français](./langs/README_fr.md) | [Deutsch](./langs/README_de.md) |
+| Русский    | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
+|------------|--------------------------------------|--------------------------------------|---------------------------------|---------------------------------------|--------------------------------------|
+| **Выбран** | [English](./langs/README_en.md) | [Español](./langs/README_es.md) | [中文](./langs/README_zh.md) | [Français](./langs/README_fr.md) | [Deutsch](./langs/README_de.md) |
 
 ## Описание
 
@@ -41,7 +41,9 @@
 
 - Клонировать репозиторий: `git clone git@github.com:yaleksandr89/remove-prefix.git`.
 - Откройте терминал и перейдите в папке `scripts/`
+
 ![go-to-scripts.gif](./assets/go-to-scripts.gif)
+
 - Разрешите выполнение скриптов. Необязательно, только если при попытке выполнить скрипт будет появляться ошибка. Терминал потребуется предварительно запустить от имени администратора (затем политику безопасности можно вернуть назад: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`):
 ```shell
 Set-ExecutionPolicy Unrestricted -Scope CurrentUser
@@ -54,6 +56,7 @@ Set-ExecutionPolicy Unrestricted -Scope CurrentUser
   - Введите список префиксов через запятую.
   - Укажите путь к папке.
 - Дождитесь завершения работы скрипта.
+
 ![how-use-windows.gif](./assets/how-use-windows.gif)
 
 ### Linux/macOS (Bash)
@@ -73,6 +76,7 @@ chmod +x remove_prefix.sh
     - Введите список префиксов через запятую.
     - Укажите путь к папке.
 - Дождитесь завершения работы скрипта.
+
 ![how-use-linux.gif](./assets/how-use-linux.gif)
 
 ## Отчёт
