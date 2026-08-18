@@ -3,6 +3,14 @@
 [![Source Code](https://img.shields.io/badge/source-yaleksandr89%2Fremove--prefix-blue.svg?style=flat-square)](https://github.com/yaleksandr89/remove-prefix)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
+<p align="center">
+  <img
+    src="assets/remove-prefix-readme-cover.png"
+    alt="Remove Prefix — batch prefix removal for files and folders with Bash and PowerShell"
+    width="100%"
+  >
+</p>
+
 ## Выберите язык:
 
 | Русский    | English                              | Español                              | 中文                              | Français                              | Deutsch                              |

@@ -3,6 +3,14 @@
 [![Source Code](https://img.shields.io/badge/source-yaleksandr89%2Fremove--prefix-blue.svg?style=flat-square)](https://github.com/yaleksandr89/remove-prefix)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
 
+<p align="center">
+  <img
+    src="../assets/remove-prefix-readme-cover.png"
+    alt="Remove Prefix — 使用 Bash 和 PowerShell 批量移除文件和文件夹名称前缀"
+    width="100%"
+  >
+</p>
+
 ## 选择语言:
 
 | Русский  | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
