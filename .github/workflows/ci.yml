@@ -40,3 +40,8 @@ jobs:
           if ($errors.Count -gt 0) {
               $errors | Format-List | Out-String | Write-Error
               exit 1
+          }
+
+      - name: Run PowerShell regression tests
+        shell: powershell
+        run: ./tests/remove_prefix.Tests.ps1
