@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  bash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate Bash syntax
+        run: bash -n scripts/remove_prefix.sh
+
+  windows-powershell:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate PowerShell syntax
+        shell: powershell
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path 'scripts/remove_prefix.ps1'),
+              [ref] $tokens,
+              [ref] $errors
+          ) | Out-Null
+          if ($errors.Count -gt 0) {
+              $errors | Format-List | Out-String | Write-Error
+              exit 1
+          }
+
+      - name: Run PowerShell regression tests
+        shell: powershell
+        run: ./tests/remove_prefix.Tests.ps1
