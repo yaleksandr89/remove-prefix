@@ -1,4 +1,32 @@
-﻿# Запрашиваем у пользователя префиксы для удаления
+﻿function Remove-LeadingPrefixes {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Name,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string[]] $Prefixes
+    )
+
+    $newName = $Name
+    foreach ($prefix in $Prefixes) {
+        if ([string]::IsNullOrEmpty($prefix)) {
+            continue
+        }
+
+        while ($newName.StartsWith($prefix, [System.StringComparison]::Ordinal)) {
+            $newName = $newName.Substring($prefix.Length)
+        }
+    }
+
+    return $newName
+}
+
+if ($MyInvocation.InvocationName -eq '.') {
+    return
+}
+
+# Запрашиваем у пользователя префиксы для удаления
 $prefixesToRemove = Read-Host "Введите префиксы, которые нужно удалить из названий файлов и папок (через запятую)"
 
 # Запрашиваем путь к папке
@@ -16,7 +44,12 @@ $startTime = Get-Date
 $startMemory = (Get-Process -Id $PID).PrivateMemorySize64 / 1MB
 
 # Разделяем введённые префиксы по запятой
-$prefixesToRemove = $prefixesToRemove -split ',' | ForEach-Object { $_.Trim() }
+$prefixesToRemove = @($prefixesToRemove -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+
+if ($prefixesToRemove.Count -eq 0) {
+    Write-Host "Ошибка: Не указаны префиксы!" -ForegroundColor Red
+    exit 1
+}
 
 # Получаем список всех файлов и папок, начиная с самых глубоких уровней вложенности
 $items = Get-ChildItem -LiteralPath $folderPath -Recurse | Sort-Object { $_.FullName.Length } -Descending
@@ -26,11 +59,11 @@ $processedFolders = 0
 
 # Переименовываем каждый элемент
 foreach ($item in $items) {
-    $newName = $item.Name
-    foreach ($prefix in $prefixesToRemove) {
-        if ($newName -match [regex]::Escape($prefix)) {
-            $newName = $newName -replace [regex]::Escape($prefix), ''
-        }
+    $newName = Remove-LeadingPrefixes -Name $item.Name -Prefixes $prefixesToRemove
+
+    if ([string]::IsNullOrEmpty($newName)) {
+        Write-Host "[Ошибка] Пустое имя для '$($item.FullName)'." -ForegroundColor Red
+        continue
     }
 
     # Если имя изменилось, переименовываем файл или папку
