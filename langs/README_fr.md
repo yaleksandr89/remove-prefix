@@ -1,12 +1,13 @@
 # Scripts pour supprimer les préfixes des noms de fichiers et dossiers
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Source Code](https://img.shields.io/badge/source-yaleksandr89%2Fremove--prefix-blue.svg?style=flat-square)](https://github.com/yaleksandr89/remove-prefix)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
 
 ## Choisissez la Langue :
 
 | Русский  | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
 |----------|--------------------------------------|--------------------------------------|---------------------------------|---------------------------------------|--------------------------------------|
-| [Русский](../../README.md) | [English](./README_en.md) | [Español](./README_es.md) | [中文](./README_zh.md) | **Sélectionné** | [Deutsch](./README_de.md) |
+| [Русский](../README.md) | [English](./README_en.md) | [Español](./README_es.md) | [中文](./README_zh.md) | **Sélectionné** | [Deutsch](./README_de.md) |
 
 ## Description
 

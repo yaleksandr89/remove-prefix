@@ -1,5 +1,8 @@
 # 删除文件和文件夹前缀的脚本
 
+[![Source Code](https://img.shields.io/badge/source-yaleksandr89%2Fremove--prefix-blue.svg?style=flat-square)](https://github.com/yaleksandr89/remove-prefix)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
+
 ## 选择语言:
 
 | Русский  | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
