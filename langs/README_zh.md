@@ -4,13 +4,7 @@
 [![CI](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml/badge.svg)](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
 
-<p align="center">
-  <img
-    src="../assets/remove-prefix-readme-cover.png"
-    alt="Remove Prefix — 使用 Bash 和 PowerShell 批量移除文件和文件夹名称前缀"
-    width="100%"
-  >
-</p>
+![Remove Prefix — 使用 Bash 和 PowerShell 批量移除文件和文件夹名称前缀](../assets/remove-prefix-readme-cover.png)
 
 ## 选择语言:
 

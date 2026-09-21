@@ -4,13 +4,7 @@
 [![CI](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml/badge.svg)](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
 
-<p align="center">
-  <img
-    src="../assets/remove-prefix-readme-cover.png"
-    alt="Remove Prefix — eliminación masiva de prefijos de archivos y carpetas con Bash y PowerShell"
-    width="100%"
-  >
-</p>
+![Remove Prefix — eliminación masiva de prefijos de archivos y carpetas con Bash y PowerShell](../assets/remove-prefix-readme-cover.png)
 
 ## Elija Idioma:
 
