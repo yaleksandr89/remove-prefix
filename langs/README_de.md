@@ -4,13 +4,7 @@
 [![CI](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml/badge.svg)](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](../LICENSE.md)
 
-<p align="center">
-  <img
-    src="../assets/remove-prefix-readme-cover.png"
-    alt="Remove Prefix — stapelweises Entfernen von Präfixen aus Datei- und Ordnernamen mit Bash und PowerShell"
-    width="100%"
-  >
-</p>
+![Remove Prefix — stapelweises Entfernen von Präfixen aus Datei- und Ordnernamen mit Bash und PowerShell](../assets/remove-prefix-readme-cover.png)
 
 ## Sprache wählen:
 
