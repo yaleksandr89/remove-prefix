@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and discussions / Вопросы и обсуждения
+    url: https://github.com/yaleksandr89/remove-prefix/discussions
+    about: General questions and usage help / Общие вопросы и помощь в использовании
+  - name: Security policy / Политика безопасности
+    url: https://github.com/yaleksandr89/remove-prefix/security/policy
+    about: Report vulnerabilities privately / Сообщайте об уязвимостях приватно
+  - name: Contribution guide / Руководство по участию
+    url: https://github.com/yaleksandr89/remove-prefix/blob/master/.github/CONTRIBUTING.md
+    about: Read before contributing / Прочитайте перед участием в разработке

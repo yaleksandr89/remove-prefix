@@ -1,0 +1,43 @@
+name: Feature request / Предложение улучшения
+description: Suggest an improvement / Предложить улучшение
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary / Описание
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Проблема
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Proposed behavior / Предлагаемое поведение
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives / Альтернативы
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and compatibility / Область и совместимость
+      description: Describe affected platforms, CLI and dependencies. / Опишите затронутые платформы, CLI и зависимости.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation / Подтверждение
+      options:
+        - label: I checked existing issues. / Я проверил существующие задачи.
+          required: true
+        - label: I checked the latest stable release. / Я проверил актуальный стабильный релиз.
+          required: true

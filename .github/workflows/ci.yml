@@ -7,25 +7,62 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   bash:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Validate Bash syntax
-        run: bash -n scripts/remove_prefix.sh
+        run: |
+          bash -n scripts/remove_prefix.sh
+          bash -n tests/remove_prefix.Tests.sh
+
+      - name: Run Bash regression tests
+        run: bash tests/remove_prefix.Tests.sh
+
+  macos-bash:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Install supported Bash
+        run: |
+          if ! brew list --versions bash > /dev/null; then
+            brew install bash
+          fi
+          echo "$(brew --prefix bash)/bin" >> "$GITHUB_PATH"
+
+      - name: Validate Bash syntax
+        run: |
+          bash -n scripts/remove_prefix.sh
+          bash -n tests/remove_prefix.Tests.sh
+
+      - name: Run Bash regression tests
+        run: bash tests/remove_prefix.Tests.sh
 
   windows-powershell:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Validate PowerShell syntax
         shell: powershell
