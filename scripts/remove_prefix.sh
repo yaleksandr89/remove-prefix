@@ -1,95 +1,131 @@
 #!/bin/bash
+set -o pipefail
 
-# Функция для получения используемой памяти в МБ
 get_current_memory() {
-    ps -o rss= -p $$ | awk '{printf "%.2f", $1/1024}'
+    ps -o rss= -p "$$" | LC_ALL=C awk '
+        NF { printf "%.2f", $1/1024; found = 1 }
+        END { if (!found) exit 1 }
+    '
 }
 
-# Запрашиваем префиксы для удаления
-read -p "Введите префиксы, которые нужно удалить (через запятую): " prefixes_input
-IFS=',' read -ra temp_prefixes <<< "$prefixes_input"
+get_timestamp() {
+    local timestamp
+    # На BSD date дробный формат может содержать буквальное N.
+    # On BSD date the fractional format may contain a literal N.
+    if timestamp=$(date '+%s.%N' 2>/dev/null) && [[ $timestamp =~ ^[0-9]+\.[0-9]+$ ]]; then
+        printf '%s\n' "$timestamp"
+    elif timestamp=$(date '+%s') && [[ $timestamp =~ ^[0-9]+$ ]]; then
+        printf '%s\n' "$timestamp"
+    else
+        return 1
+    fi
+}
 
-# Очищаем и проверяем префиксы
+if ! IFS= read -r -p "Введите префиксы, которые нужно удалить (через запятую): " prefixes_input; then
+    printf 'Ошибка: Не удалось прочитать префиксы!\n' >&2
+    exit 1
+fi
+IFS=',' read -ra raw_prefixes <<< "$prefixes_input"
+
 prefixes=()
-for p in "${temp_prefixes[@]}"; do
-    trimmed_p=$(echo "$p" | xargs)
-    [ -n "$trimmed_p" ] && prefixes+=("$trimmed_p")
+for prefix in "${raw_prefixes[@]}"; do
+    prefix=${prefix#"${prefix%%[![:space:]]*}"}
+    prefix=${prefix%"${prefix##*[![:space:]]}"}
+    [[ -n $prefix ]] && prefixes+=("$prefix")
 done
 
-if [ ${#prefixes[@]} -eq 0 ]; then
-    echo "Ошибка: Не указаны префиксы!" >&2
+if (( ${#prefixes[@]} == 0 )); then
+    printf 'Ошибка: Не указаны префиксы!\n' >&2
     exit 1
 fi
 
-# Запрашиваем путь к папке
-read -p "Введите путь к папке: " folder_path
-if [ ! -d "$folder_path" ]; then
-    echo "Ошибка: Папка не существует!" >&2
+if ! IFS= read -r -p "Введите путь к папке: " folder_path; then
+    printf 'Ошибка: Не удалось прочитать путь к папке!\n' >&2
     exit 1
 fi
+if [[ ! -d $folder_path ]]; then
+    printf 'Ошибка: Папка не существует!\n' >&2
+    exit 1
+fi
+[[ $folder_path == /* ]] || folder_path=./$folder_path
 
-# Старт скрипта
-echo -e "\nЗапуск процесса переименования..."
-start_time=$(date +%s.%N)
-start_memory=$(get_current_memory)
+for utility in find mv ps awk date bc; do
+    if ! command -v "$utility" >/dev/null; then
+        printf 'Ошибка: Не найдена необходимая команда %s!\n' "$utility" >&2
+        exit 1
+    fi
+done
+
+if ! start_time=$(get_timestamp) || ! start_memory=$(get_current_memory); then
+    printf 'Ошибка: Не удалось получить начальные данные для отчёта!\n' >&2
+    exit 1
+fi
+printf '\nЗапуск процесса переименования...\n'
 processed_files=0
 processed_folders=0
+scan_complete=0
+failed=0
 
-# Обрабатываем элементы с глубины
 while IFS= read -r -d '' path; do
-    name=$(basename "$path")
-    dir=$(dirname "$path")
-    new_name="$name"
+    if [[ -z $path ]]; then
+        scan_complete=1
+        break
+    fi
 
-    # Удаляем все префиксы
+    name=${path##*/}
+    dir=${path%/*}
+    new_name=$name
     for prefix in "${prefixes[@]}"; do
-        while : ; do
-            prefix_len=${#prefix}
-            [ ${#new_name} -lt $prefix_len ] && break
-            [ "${new_name:0:$prefix_len}" != "$prefix" ] && break
-            new_name="${new_name:$prefix_len}"
+        prefix_length=${#prefix}
+        while [ "${new_name:0:prefix_length}" = "$prefix" ]; do
+            new_name=${new_name:prefix_length}
         done
     done
+    [[ $new_name != "$name" ]] || continue
 
-    # Проверяем изменения
-    [ -z "$new_name" ] && echo "Ошибка: Пустое имя для '$path'" >&2 && continue
-    [ "$new_name" = "$name" ] && continue
-
-    new_path="$dir/$new_name"
-    
-    # Переименовываем если возможно
-    if [ -e "$path" ]; then
-        if [ ! -e "$new_path" ]; then
-            if mv -- "$path" "$new_path" 2>/dev/null; then
-                if [ -d "$new_path" ]; then
-                    ((processed_folders++))
-                    echo -e "[Папка] $path -> $new_path"
-                else
-                    ((processed_files++))
-                    echo -e "[Файл]  $path -> $new_path"
-                fi
-            else
-                echo "Ошибка переименования: $path" >&2
-            fi
+    new_path=$dir/$new_name
+    if [[ -z $new_name || $new_name == . || $new_name == .. ]]; then
+        printf 'Ошибка: Недопустимое имя для %s\n' "$path" >&2
+    elif [[ ! -e $path && ! -L $path ]]; then
+        printf 'Не найден: %s\n' "$path" >&2
+    elif [[ -e $new_path || -L $new_path ]]; then
+        printf 'Конфликт: %s существует!\n' "$new_path" >&2
+    elif mv -n -- "$path" "$new_path" && [[ ! -e $path && ! -L $path ]]; then
+        if [[ ! -L $new_path && -d $new_path ]]; then
+            ((processed_folders++))
+            printf '[Папка] %s -> %s\n' "$path" "$new_path"
         else
-            echo "Конфликт: '$new_path' существует!" >&2
+            ((processed_files++))
+            printf '[Файл]  %s -> %s\n' "$path" "$new_path"
         fi
+        continue
     else
-        echo "Не найден: $path" >&2
+        printf 'Ошибка переименования: %s -> %s\n' "$path" "$new_path" >&2
     fi
-done < <(find "$folder_path" -mindepth 1 -depth -print0)
+    failed=1
+# Пустая запись подтверждает завершение find без ошибок.
+# An empty record confirms find finished successfully.
+done < <(find "$folder_path" -depth -mindepth 1 -print0 && printf '\0')
 
-# Вывод статистики
-end_time=$(date +%s.%N)
-end_memory=$(get_current_memory)
+if (( ! scan_complete )); then
+    printf 'Ошибка: Не удалось полностью просканировать папку %s\n' "$folder_path" >&2
+    failed=1
+fi
 
-time_diff=$(echo "$end_time - $start_time" | bc -l | awk '{printf "%.3f", $1}')
-memory_diff=$(echo "$end_memory - $start_memory" | bc -l | awk '{printf "%.2f", $1}')
+printf '\nОтчёт:\n-----------------\n'
+if end_time=$(get_timestamp) && end_memory=$(get_current_memory) &&
+    time_diff=$(printf '%s - %s\n' "$end_time" "$start_time" | bc -l | LC_ALL=C awk '{printf "%.3f", $1}') &&
+    memory_diff=$(printf '%s - %s\n' "$end_memory" "$start_memory" | bc -l | LC_ALL=C awk '{printf "%.2f", $1}') &&
+    [[ -n $time_diff && -n $memory_diff ]]; then
+    printf 'Время выполнения: %s сек.\nИспользовано памяти: %s МБ\n' "$time_diff" "$memory_diff"
+else
+    printf 'Ошибка: Не удалось вычислить время выполнения или использование памяти!\n' >&2
+    failed=1
+fi
+printf 'Обработано папок: %s\nОбработано файлов: %s\n' "$processed_folders" "$processed_files"
 
-echo -e "\nОтчёт:"
-echo "-----------------"
-echo "Время выполнения: ${time_diff} сек."
-echo "Использовано памяти: ${memory_diff} МБ"
-echo "Обработано папок: $processed_folders"
-echo "Обработано файлов: $processed_files"
-echo -e "\nГотово! Префиксы удалены.\n"
+if (( failed )); then
+    printf '\nОбработка завершена с ошибками.\n' >&2
+    exit 1
+fi
+printf '\nГотово! Префиксы удалены.\n\n'

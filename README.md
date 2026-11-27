@@ -1,106 +1,69 @@
 # Скрипты для удаления префиксов из названий файлов и папок
 
 [![Source Code](https://img.shields.io/badge/source-yaleksandr89%2Fremove--prefix-blue.svg?style=flat-square)](https://github.com/yaleksandr89/remove-prefix)
+[![Bash 4.0+](https://img.shields.io/badge/Bash-4.0%2B-4EAA25.svg?style=flat-square)](docs/langs/ru/guides/usage.md)
+[![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE.svg?style=flat-square)](docs/langs/ru/guides/usage.md)
 [![CI](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml/badge.svg)](https://github.com/yaleksandr89/remove-prefix/actions/workflows/ci.yml)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-![Remove Prefix — batch prefix removal for files and folders with Bash and PowerShell](assets/remove-prefix-readme-cover.png)
+![Remove Prefix: массовое удаление префиксов из названий файлов и папок с помощью Bash и PowerShell](docs/assets/remove-prefix-readme-cover.png)
 
-## Выберите язык:
-
-| Русский    | English                              | Español                              | 中文                              | Français                              | Deutsch                              |
-|------------|--------------------------------------|--------------------------------------|---------------------------------|---------------------------------------|--------------------------------------|
-| **Выбран** | [English](./langs/README_en.md) | [Español](./langs/README_es.md) | [中文](./langs/README_zh.md) | [Français](./langs/README_fr.md) | [Deutsch](./langs/README_de.md) |
+**Русский** | [English](docs/langs/en/README.md) | [Español](docs/langs/es/README.md) | [中文](docs/langs/zh/README.md) | [Français](docs/langs/fr/README.md) | [Deutsch](docs/langs/de/README.md)
 
 ## Описание
 
-Эти скрипты позволяют массово удалять указанные префиксы из названий файлов и папок. Они рекурсивно обрабатывают все элементы в выбранной директории, включая вложенные подпапки. Поддерживаются:
-- Удаление нескольких префиксов за один запуск.
-- Работа в `Linux/macOS` (через `Bash`) и `Windows` (через `PowerShell`).
-- Генерация отчёта с временем выполнения, использованием памяти и статистикой.
+Remove Prefix рекурсивно удаляет указанные ведущие префиксы из имён файлов и папок в выбранной директории. Утилита помогает очистить имена после скачивания, упростить структуру проектов и автоматизировать рутинное переименование.
 
-## Цели и назначение
+- Несколько префиксов за один запуск; повторяющиеся ведущие префиксы удаляются последовательно.
+- Bash для Linux и macOS, PowerShell для Windows.
+- Отчёт о времени выполнения, памяти и количестве переименованных файлов и папок.
 
-Скрипты предназначены для:
+## Как работает утилита
 
-- Очистка названий файлов после скачивания (например, удаление рекламных тегов).
-- Упрощение структуры проектов.
-- Автоматизация рутинных задач.
+```mermaid
+flowchart TD
+    A["Префиксы и папка"]
+    B["Обход содержимого<br/>снизу вверх"]
+    C["Удаление ведущих префиксов<br/>и переименование"]
+    D["Отчёт: успехи и ошибки"]
 
-## Структура проекта
-
-```text
-.
-├── assets/                 # Примеры использования и результаты работы скриптов
-├── langs/                  # Локализация README.md на другие языки
-├── scripts/
-│   ├── remove_prefix.sh    # Скрипт для Linux/macOS
-│   └── remove_prefix.ps1   # Скрипт для Windows
-├── LICENSE.md
-└── README.md
+    A --> B --> C --> D
 ```
-## Как использовать
+
+## Быстрый старт
+
+Требования: Git для клонирования; Windows 10/11 с PowerShell 5.1 или выше либо Linux/macOS с Bash 4.0+ и утилитами `find`, `mv`, `ps`, `awk`, `date`, `bc`. На macOS используйте Bash 4.0+ из `PATH`, а не штатный `/bin/bash` 3.2.
+
+**Скрипты изменяют имена на диске. Сначала сделайте резервную копию и проверьте работу на отдельной копии данных. Не запускайте их от администратора или root без необходимости.**
 
 ### Windows (PowerShell)
 
-- Клонировать репозиторий: `git clone git@github.com:yaleksandr89/remove-prefix.git`.
-- Откройте терминал и перейдите в папке `scripts/`
-
-![go-to-scripts.gif](./assets/go-to-scripts.gif)
-
-- Разрешите выполнение скриптов. Необязательно, только если при попытке выполнить скрипт будет появляться ошибка. Терминал потребуется предварительно запустить от имени администратора (затем политику безопасности можно вернуть назад: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`):
-```shell
-Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+```powershell
+git clone https://github.com/yaleksandr89/remove-prefix.git
+cd remove-prefix
+.\scripts\remove_prefix.ps1
 ```
-- Запустите скрипт:
-```shell
-.\remove_prefix.ps1
-```
-- Следуйте инструкциям на экране:
-  - Введите список префиксов через запятую.
-  - Укажите путь к папке.
-- Дождитесь завершения работы скрипта.
-
-![how-use-windows.gif](./assets/how-use-windows.gif)
 
 ### Linux/macOS (Bash)
 
-- Клонировать репозиторий: `git clone git@github.com:yaleksandr89/remove-prefix.git`.
-- Откройте терминал и перейдите в папку со скриптом:
-
-- Дайте скрипту права на выполнение:
 ```bash
-chmod +x remove_prefix.sh
+git clone https://github.com/yaleksandr89/remove-prefix.git
+cd remove-prefix
+bash scripts/remove_prefix.sh
 ```
-- Запустите скрипт:
-```bash
-./remove_prefix.sh
-```
-- Следуйте инструкциям на экране:
-    - Введите список префиксов через запятую.
-    - Укажите путь к папке.
-- Дождитесь завершения работы скрипта.
 
-![how-use-linux.gif](./assets/how-use-linux.gif)
+Введите префиксы через запятую, затем путь к папке. Например, `ad_,pre_` и путь к тестовой директории. Корневая папка не переименовывается.
 
-## Отчёт
+## Документация
 
-После выполнения скрипт покажет:
+- [Использование и примеры](docs/langs/ru/guides/usage.md)
+- [Участие в разработке](.github/CONTRIBUTING.md)
+- [Безопасность](.github/SECURITY.md)
 
-- Время выполнения.
-- Использованную память.
-- Количество обработанных файлов и папок.
+## Обратная связь
 
-Для windows:
+- [Сообщить об ошибке или предложить улучшение](https://github.com/yaleksandr89/remove-prefix/issues)
+- [Обсуждения и вопросы](https://github.com/yaleksandr89/remove-prefix/discussions)
+- [Сообщить об уязвимости](.github/SECURITY.md)
 
-![windows-result.png](./assets/windows-result.png)
-
-Для Linux:
-
-![linux-result.png](./assets/linux-result.png)
-
-## Совместимость
-
-- Windows 10/11 (PowerShell 5.1 или выше)
-- Linux (bash 4.0+)
-- macOS (bash 4.0+)
+<p align="center">Если проект оказался полезен, поставьте звезду на GitHub — так его будет проще найти другим разработчикам. 🤘</p>

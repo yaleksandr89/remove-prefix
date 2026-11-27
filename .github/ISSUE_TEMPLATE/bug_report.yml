@@ -1,0 +1,55 @@
+name: Bug report / Сообщение об ошибке
+description: Report a reproducible defect / Сообщить о воспроизводимом дефекте
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report vulnerabilities publicly. Follow the [security policy](https://github.com/yaleksandr89/remove-prefix/security/policy).
+        Не сообщайте об уязвимостях публично. Следуйте [политике безопасности](https://github.com/yaleksandr89/remove-prefix/security/policy).
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary / Описание
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps / Шаги воспроизведения
+      description: Use a synthetic directory and file names. / Используйте синтетический каталог и имена файлов.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior / Ожидаемое поведение
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / Фактическое поведение
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / Окружение
+      description: Project version or commit, OS, Bash or PowerShell version. / Версия проекта или коммит, ОС, версия Bash или PowerShell.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs / Очищенные журналы
+      description: Remove secrets, personal paths and real data. / Удалите секреты, личные пути и реальные данные.
+      render: text
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation / Подтверждение
+      options:
+        - label: I checked existing issues. / Я проверил существующие задачи.
+          required: true
+        - label: I checked the latest stable release. / Я проверил актуальный стабильный релиз.
+          required: true
